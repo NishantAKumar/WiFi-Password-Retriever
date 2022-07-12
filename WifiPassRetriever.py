@@ -1,6 +1,7 @@
 import os
 from tabulate import tabulate
 import sys
+import time
 
 def retrievePasswords(profile):
     individual_interface_ouput = os.popen(f'netsh wlan show profiles "{profile}" key=clear').read().split("\n")
@@ -18,7 +19,16 @@ def retrievePasswords(profile):
                 datastructure["Security Key"] = individual_interface_ouput[i+1][x::]
     return datastructure
 
-print("Please Wait...Retrieving Passwords")
+def screenFormatter():
+    time.sleep(0.7)
+    os.system("cls")
+
+
+
+
+print("Initializing...")
+screenFormatter()
+print("Retrieving Passwords...")
 interfaces_output = os.popen("netsh wlan show profiles").read().split("\n")
 
 useless_values_at_start = 9
@@ -38,10 +48,12 @@ if len(interfaces_output) > 0:
                 j += 2
                 passwords = retrievePasswords(interfaces_output[i][j::])
                 profiles_on_interface.append([interfaces_output[i][j::], passwords["Has Security Key"], passwords["Security Key"]])
-
+    
+    screenFormatter()
     print(tabulate(profiles_on_interface, headers=["SSID", "Has Security Key", "Security Key"], tablefmt="pretty"))
 
 try:
+    print("Press CTRL-C to exit the program")
     while True:
         pass
 except KeyboardInterrupt:
